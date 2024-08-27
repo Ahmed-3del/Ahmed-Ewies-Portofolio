@@ -1,113 +1,309 @@
-import Image from "next/image";
+ "use client"
+import { useState, useEffect, useMemo } from 'react'
+import { motion, useAnimation } from 'framer-motion'
+import { ChevronRight, Code, Briefcase, Mail, ExternalLink } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import Link from 'next/link'
 
-export default function Home() {
+export default function Component() {
+  const [activeSection, setActiveSection] = useState('home')
+  const controls = useAnimation()
+
+  const sections = useMemo(() => ['home', 'about', 'projects', 'contact'], []);
+
+  useEffect(() => {
+    controls.start('visible')
+  }, [controls, activeSection])
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      const windowHeight = window.innerHeight
+      
+      sections.forEach((section) => {
+        const element = document.getElementById(section)
+        if (element) {
+          const { top, bottom } = element.getBoundingClientRect()
+          if (top < windowHeight / 2 && bottom > windowHeight / 2) {
+            setActiveSection(section)
+          }
+        }
+      })
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [activeSection, sections])
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-800 bg-opacity-90 backdrop-blur-md">
+        <nav className="container mx-auto px-6 py-4">
+          <ul className="flex justify-center space-x-8">
+            {sections.map((section) => (
+              <li key={section}>
+                <Button
+                  variant="ghost"
+                  className={`text-sm uppercase ${activeSection === section ? 'text-green-400' : 'text-gray-300'}`}
+                  onClick={() => {
+                    document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                >
+                  {section}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
+      <main className="pt-20">
+        <LandingSection id="home" />
+        <AboutSection id="about" />
+        <ProjectsSection id="projects" />
+        <ContactSection id="contact" />
+      </main>
+
+      <footer className="bg-gray-800 py-8 text-center">
+        <p className="text-gray-400">&copy; {new Date().getFullYear()} A.Ewies. All rights reserved.</p>
+      </footer>
+    </div>
+  )
+}
+
+function LandingSection({ id } : { id: string }) {
+  return (
+    <section id={id} className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="container mx-auto px-6 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-5xl md:text-7xl font-bold mb-6"
+        >
+          Expert Developer for a Connected <span className="text-green-400">{'{'}</span>World<span className="text-green-400">{'}'}</span>
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="text-xl mb-8"
+        >
+          Crafting innovative solutions with cutting-edge technologies
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+        >
+          <Link href="#projects">
+          <Button className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg">
+            Explore My Work <ChevronRight className="ml-2" />
+          </Button>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function AboutSection({ id } : { id: string }) {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  }
+
+  return (
+    <section id={id} className="py-20 bg-gray-800">
+      <div className="container mx-auto px-6">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-4xl font-bold mb-12 text-center"
+        >
+          About Me
+        </motion.h2>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          <motion.div variants={itemVariants} className="bg-gray-700 p-6 rounded-lg">
+            <Code className="text-green-400 w-12 h-12 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Technical Skills</h3>
+            <p>Proficient in JavaScript, TypeScript, React, Node.js, and modern web technologies.</p>
+          </motion.div>
+          <motion.div variants={itemVariants} className="bg-gray-700 p-6 rounded-lg">
+            <Briefcase className="text-green-400 w-12 h-12 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Experience</h3>
+            <p>1.5+ years of experience in developing scalable web applications and solving complex problems.</p>
+          </motion.div>
+          <motion.div variants={itemVariants} className="bg-gray-700 p-6 rounded-lg">
+            <Mail className="text-green-400 w-12 h-12 mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Collaboration</h3>
+            <p>Strong communicator and team player, always eager to learn and share knowledge.</p>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function ProjectsSection({ id } : { id: string }) {
+  const projects = [
+   
+    {
+      title: "Building Management System (BMS) Technology Company Website with Integrated Dashboard",
+      description: " A website for a BMS technology company with an integrated dashboard for monitoring and controlling building systems.",
+      technologies: ["Next.js", "Shadcn UI" ,"tailwind css","useSwr" ,"ReduxToolKit", "MongoDB" ,"Express.js" ,"Node.js" ],
+      link: "https://bms-tech.vercel.app/"
+    }
+  ]
+
+
+
+
+  return (
+    <section id={id} className="py-20 bg-gray-900">
+      <div className="container mx-auto px-6">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-4xl font-bold mb-12 text-center"
+        >
+          Featured Projects
+        </motion.h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+            >
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                <p className="text-gray-400 mb-4">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {project.technologies.map((tech, i) => (
+                    <span key={i} className="bg-gray-700 text-green-400 px-2 py-1 rounded text-sm">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-green-400 hover:text-green-300"
+                >
+                  View Project <ExternalLink className="ml-2 w-4 h-4" />
+                </a>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
+    </section>
+  )
+}
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+function ContactSection({ id } : { id: string }) {
+  return (
+    <section id={id} className="py-20 bg-gray-800">
+      <div className="container mx-auto px-6">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-4xl font-bold mb-12 text-center"
+        >
+          Get In Touch
+        </motion.h2>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md mx-auto"
+        >
+          <form className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              ></textarea>
+            </div>
+            <div>
+              <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition duration-300">
+                Send Message
+              </Button>
+            </div>
+          </form>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-12 text-center"
+        >
+          <p className="text-xl mb-4">Or connect with me on:</p>
+          <div className="flex justify-center space-x-4">
+            <a href="https://github.com/Ahmed-3del" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">
+              <GitHubLogoIcon className="w-8 h-8" />
+            </a>
+            <a href="www.linkedin.com/in/ahmed-adel-1b8466241" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">
+              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+          
+          </div>
+        </motion.div>
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+    </section>
+  )
 }
