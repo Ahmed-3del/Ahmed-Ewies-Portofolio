@@ -5,6 +5,7 @@ import { ChevronRight, Code, Briefcase, Mail, ExternalLink } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'
+import Terminal, { TypedReactHooksDemo } from '@/components/mainpage/terminal'
 
 export default function Component() {
   const [activeSection, setActiveSection] = useState('home')
@@ -72,24 +73,19 @@ export default function Component() {
 
 function LandingSection({ id } : { id: string }) {
   return (
-    <section id={id} className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="container mx-auto px-6 text-center">
+    <section id={id} className="min-h-screen relative w-full  flex items-center justify-center bg-gray-900">
+      <div className="container mx-auto  w-[60%] px-6 text-center">
+        
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-7xl font-bold mb-6"
+          className="text-3xl h-40 md:text-4xl font-bold mb-6"
         >
-          Expert Developer for a Connected <span className="text-green-400">{'{'}</span>World<span className="text-green-400">{'}'}</span>
+          <TypedReactHooksDemo />
+
         </motion.h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-xl mb-8"
-        >
-          Crafting innovative solutions with cutting-edge technologies
-        </motion.p>
+   
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -101,7 +97,10 @@ function LandingSection({ id } : { id: string }) {
           </Button>
           </Link>
         </motion.div>
-      </div>
+      </div> 
+      {/* <div className=" px-6 w-[40%]">
+        <Terminal />
+      </div> */}
     </section>
   )
 }
